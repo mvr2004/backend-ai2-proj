@@ -49,7 +49,7 @@ const AvEstabelecimento = sequelize.define('AvEstabelecimento', {
                             userId: 2, 
                             estabelecimentoId: 2,
                             rating: 3
-                        }
+                        },
 						{
                             userId: 1,
                             estabelecimentoId: 2,
