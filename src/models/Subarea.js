@@ -52,7 +52,6 @@ const Subarea = sequelize.define('Subarea', {
             'Gastronomia': [
               { nomeSubarea: 'Restaurantes', areaId: areas.find(area => area.nomeArea === 'Gastronomia').id },
               { nomeSubarea: 'Shoppings', areaId: areas.find(area => area.nomeArea === 'Gastronomia').id },
-              { nomeSubarea: 'Outras...', areaId: areas.find(area => area.nomeArea === 'Gastronomia').id }
             ],
             'Habitação/Alojamento': [
               { nomeSubarea: 'Quartos para arrendar', areaId: areas.find(area => area.nomeArea === 'Habitação/Alojamento').id },
@@ -63,12 +62,10 @@ const Subarea = sequelize.define('Subarea', {
             'Transportes': [
               { nomeSubarea: 'Boleias', areaId: areas.find(area => area.nomeArea === 'Transportes').id },
               { nomeSubarea: 'Transportes públicos', areaId: areas.find(area => area.nomeArea === 'Transportes').id },
-              { nomeSubarea: 'Outras...', areaId: areas.find(area => area.nomeArea === 'Transportes').id }
             ],
             'Lazer': [
               { nomeSubarea: 'Cinema', areaId: areas.find(area => area.nomeArea === 'Lazer').id },
               { nomeSubarea: 'Parques', areaId: areas.find(area => area.nomeArea === 'Lazer').id },
-              { nomeSubarea: 'Outras...', areaId: areas.find(area => area.nomeArea === 'Lazer').id }
             ]
           };
 

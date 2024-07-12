@@ -19,8 +19,12 @@ exports.createSubarea = async (req, res) => {
     const newSubarea = await Subarea.create({ nomeSubarea, areaId });
     res.json(newSubarea);
   } catch (error) {
-    console.error('Erro ao criar subárea:', error);
-    res.status(500).json({ error: 'Erro ao criar subárea' });
+    if (error.name === 'SequelizeUniqueConstraintError') {
+      res.status(400).json({ error: 'Já existe uma subárea com este nome' });
+    } else {
+      console.error('Erro ao criar subárea:', error);
+      res.status(500).json({ error: 'Erro ao criar subárea' });
+    }
   }
 };
 
