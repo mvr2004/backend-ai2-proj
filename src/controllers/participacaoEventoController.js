@@ -1,4 +1,4 @@
-const ParticipacaoEvento = require('../models/ParticipacaoEvento');
+const ParticipacaoEvento = require('../models/UserEventos');
 
 // Adicionar um usuário a um evento
 exports.addParticipacao = async (req, res) => {

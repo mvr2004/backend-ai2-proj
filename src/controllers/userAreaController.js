@@ -1,5 +1,3 @@
-// controllers/userAreaController.js
-
 const { User, Area, UserArea } = require('../models');
 
 // Adicionar uma área de interesse a um usuário

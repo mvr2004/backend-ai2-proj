@@ -1,7 +1,7 @@
 // controllers/eventoController.js
 
 const Evento = require('../models/Evento');
-const ParticipacaoEvento = require('../models/ParticipacaoEvento');
+const ParticipacaoEvento = require('../models/UserEventos');
 const { Sequelize } = require('sequelize');
 
 // Ver todos os eventos com a contagem de participantes

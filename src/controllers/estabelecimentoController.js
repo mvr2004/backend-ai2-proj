@@ -1,5 +1,5 @@
 const Evento = require('../models/Evento');
-const AvEstabelecimento = require('../models/AvEstabelecimento');
+const AvEstabelecimento = require('../models/AvaliacaoEstabelecimento');
 const Estabelecimento = require('../models/Estabelecimento');
 const sequelize = require('../configs/database');
 
