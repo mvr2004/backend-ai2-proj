@@ -35,27 +35,10 @@ const AvEstabelecimento = sequelize.define('AvEstabelecimento', {
                 const existingAvEstabelecimentos = await AvEstabelecimento.count();
                 if (existingAvEstabelecimentos === 0) {
                     await AvEstabelecimento.bulkCreate([
-                        {
-                            userId: 1, 
-                            estabelecimentoId: 1,
-                            rating: 4
-                        },
-						{
-                            userId: 2, 
-                            estabelecimentoId: 1, 
-                            rating: 5
-                        },
-                        {
-                            userId: 2, 
-                            estabelecimentoId: 2,
-                            rating: 3
-                        },
-						{
-                            userId: 1,
-                            estabelecimentoId: 2,
-                            rating: 2
-                        }
-                        
+                        { userId: 1, estabelecimentoId: 1, rating: 4 },
+                        { userId: 2, estabelecimentoId: 1, rating: 5 },
+                        { userId: 2, estabelecimentoId: 2, rating: 3 },
+                        { userId: 1, estabelecimentoId: 2, rating: 2 }
                     ]);
                 }
             } catch (error) {
