@@ -30,6 +30,10 @@ const Evento = sequelize.define('Evento', {
         type: DataTypes.STRING,
         allowNull: true
     },
+    ativo: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true
+    },
     subareaId: {
         type: DataTypes.INTEGER,
         references: {
@@ -52,7 +56,43 @@ const Evento = sequelize.define('Evento', {
         }
     }
 }, {
-    timestamps: true
+    timestamps: false,
+    hooks: {
+        afterSync: async () => {
+            try {
+                const existingEventos = await Evento.count();
+                if (existingEventos === 0) {
+                    await Evento.bulkCreate([
+                        {
+                            nome: 'Jogar uma futebolada',
+                            localizacao: 'Campo de jogos Almeida Sobrinho, Santa Cruz da Trapa',
+                            data: '2024-08-15',
+                            hora: '10:00:00',
+                            descricao: 'Venha jogar a bola connosco',
+                            ativo: true,
+                            subareaId: 3, 
+                            utilizadorId: 1, 
+                            centroId: 1 
+                        },
+                        {
+                            nome: 'Evento de karts',
+                            localizacao: 'Vila Nova do Paiva',
+                            data: '2024-09-20',
+                            hora: '14:30:00',
+                            descricao: 'Venha connosco acelarar e sentir o cheiro a gasolina em Vila Nova Do Paiva',
+                            ativo: true,
+                            subareaId: 10, 
+                            utilizadorId: 1, 
+                            centroId: 1 
+                        }
+                        // Adicione mais registros conforme necessário
+                    ]);
+                }
+            } catch (error) {
+                console.error('Erro ao inserir dados pré-definidos de Evento:', error);
+            }
+        }
+    }
 });
 
 Subarea.hasMany(Evento, { foreignKey: 'subareaId' });

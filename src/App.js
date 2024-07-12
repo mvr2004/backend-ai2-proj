@@ -11,6 +11,8 @@ const centroRoutes = require('./routes/centroRoutes');
 const reportRoutes = require('./routes/reportRoutes');
 const userRoutes = require('./routes/userRoutes');
 const areaRoutes = require('./routes/areasubareaRoutes');
+const estabelecimentoRoutes = require('./routes/estabelecimentoRoutes');
+const eventoRoutes = require('./routes/eventoRoutes');
 
 //Configurações
 app.set('port', process.env.PORT || 3000);
@@ -36,6 +38,8 @@ app.use('/centro', centroRoutes);
 app.use('/report', reportRoutes);
 app.use('/user', userRoutes);
 app.use('/area', areaRoutes);
+app.use('/estabelecimento', estabelecimentoRoutes);
+app.use('/eventos', eventoRoutes);
 
 app.use('/teste', (req, res) => {
     res.send("Rota TESTE.");

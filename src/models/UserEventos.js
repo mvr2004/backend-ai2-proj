@@ -1,3 +1,5 @@
+// models/ParticipacaoEvento.js
+
 const { DataTypes } = require('sequelize');
 const sequelize = require('../configs/database');
 const Utilizador = require('./User');
@@ -19,7 +21,42 @@ const ParticipacaoEvento = sequelize.define('ParticipacaoEvento', {
         }
     }
 }, {
-    timestamps: true
+    timestamps: true,
+    hooks: {
+        afterSync: async () => {
+            try {
+                const existingParticipacoes = await ParticipacaoEvento.count();
+                if (existingParticipacoes === 0) {
+                    await ParticipacaoEvento.bulkCreate([
+                        {
+                            utilizadorId: 1, 
+                            eventoId: 1 
+                        },
+						{
+                            utilizadorId: 2, 
+                            eventoId: 1 
+                        },
+						{
+                            utilizadorId: 3, 
+                            eventoId: 1 
+                        },
+						{
+                            utilizadorId: 1, 
+                            eventoId: 2 
+                        },
+						
+                        {
+                            utilizadorId: 2, 
+                            eventoId: 2 
+                        }
+                        
+                    ]);
+                }
+            } catch (error) {
+                console.error('Erro ao inserir dados pré-definidos de ParticipacaoEvento:', error);
+            }
+        }
+    }
 });
 
 Utilizador.belongsToMany(Evento, { through: ParticipacaoEvento, foreignKey: 'utilizadorId' });

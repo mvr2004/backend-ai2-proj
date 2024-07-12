@@ -28,7 +28,41 @@ const AvEstabelecimento = sequelize.define('AvEstabelecimento', {
         allowNull: false
     },
 }, {
-    timestamps: true
+    timestamps: true,
+    hooks: {
+        afterSync: async () => {
+            try {
+                const existingAvEstabelecimentos = await AvEstabelecimento.count();
+                if (existingAvEstabelecimentos === 0) {
+                    await AvEstabelecimento.bulkCreate([
+                        {
+                            userId: 1, 
+                            estabelecimentoId: 1,
+                            rating: 4
+                        },
+						{
+                            userId: 2, 
+                            estabelecimentoId: 1, 
+                            rating: 5
+                        },
+                        {
+                            userId: 2, 
+                            estabelecimentoId: 2,
+                            rating: 3
+                        }
+						{
+                            userId: 1,
+                            estabelecimentoId: 2,
+                            rating: 2
+                        }
+                        
+                    ]);
+                }
+            } catch (error) {
+                console.error('Erro ao inserir dados pré-definidos de Avaliação de Estabelecimento:', error);
+            }
+        }
+    }
 });
 
 User.hasMany(AvEstabelecimento, { foreignKey: 'userId' });

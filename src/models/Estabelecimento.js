@@ -1,3 +1,5 @@
+// models/Estabelecimento.js
+
 const { DataTypes } = require('sequelize');
 const sequelize = require('../configs/database');
 const Subarea = require('./Subarea');
@@ -21,7 +23,7 @@ const Estabelecimento = sequelize.define('Estabelecimento', {
         type: DataTypes.STRING,
         allowNull: false
     },
-    descriscao: {
+    descricao: { // Corrigido de "descriscao" para "descricao"
         type: DataTypes.STRING,
         allowNull: true
     },
@@ -40,7 +42,7 @@ const Estabelecimento = sequelize.define('Estabelecimento', {
             key: 'id'
         }
     },
-	centroId: { 
+    centroId: { 
         type: DataTypes.INTEGER,
         references: {
             model: Centro,
@@ -48,12 +50,45 @@ const Estabelecimento = sequelize.define('Estabelecimento', {
         }
     }
 }, {
-    timestamps: false
+    timestamps: false,
+    hooks: {
+        afterSync: async () => {
+            try {
+                const existingEstabelecimentos = await Estabelecimento.count();
+                if (existingEstabelecimentos === 0) {
+                    await Estabelecimento.bulkCreate([
+                        {
+                            nome: 'Restaurante do Migas',
+                            localizacao: 'Rua das Flores, Figueira da Foz',
+                            contacto: '+351 123 456 789',
+                            descricao: 'Restaurante tradicional português',
+                            pago: true,
+                            foto: 'https://backend-ai2-proj.onrender.com/uploads/restaurante.jpg',
+                            subareaId: 14, 
+                            centroId: 1 
+                        },
+                        {
+                            nome: 'Ginasio - Academia RamboDaSanta',
+                            localizacao: 'Avenida S.Mamede, Santa Cruz da Trapa',
+                            contacto: '+351 987 654 321',
+                            descricao: 'Ginasio de musculação e fitness',
+                            pago: true,
+                            foto: 'https://backend-ai2-proj.onrender.com/uploads/ginasio.jpg',
+                            subareaId: 4, 
+                            centroId: 1 
+                        }
+                        // Adicione mais registros conforme necessário
+                    ]);
+                }
+            } catch (error) {
+                console.error('Erro ao inserir dados pré-definidos de Estabelecimento:', error);
+            }
+        }
+    }
 });
 
 Subarea.hasMany(Estabelecimento, { foreignKey: 'subareaId' });
 Estabelecimento.belongsTo(Subarea, { foreignKey: 'subareaId' });
-
 
 Centro.hasMany(Estabelecimento, { foreignKey: 'centroId' });
 Estabelecimento.belongsTo(Centro, { foreignKey: 'centroId' });
