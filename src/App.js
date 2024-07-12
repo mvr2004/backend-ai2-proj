@@ -1,24 +1,15 @@
 const express = require('express');
 const path = require('path');
+const sequelize = require('./models/database');
+const genreRoute = require('./routes/genre_route');
+const movieRoute = require('./routes/movie_route');
+
 const app = express();
 
-//bd
-const sequelize = require('./configs/database'); 
+app.set('port', process.env.PORT || 8080);
 
-//declarar routes
-const adminRoutes = require('./routes/adminRoutes');
-const centroRoutes = require('./routes/centroRoutes');
-const reportRoutes = require('./routes/reportRoutes');
-const userRoutes = require('./routes/userRoutes');
-
-//Configurações
-app.set('port', process.env.PORT || 3000);
-
-// Middleware para servir arquivos estáticos na pasta 'uploads'
-app.use('/uploads', express.static(path.join(__dirname, '../uploads'))); // Modificado para garantir o caminho correto
-
-//Middlewares
-app.use(express.json());
+// Configurar a pasta de uploads como estática
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // Configuração de headers CORS
 app.use((req, res, next) => {
@@ -29,46 +20,56 @@ app.use((req, res, next) => {
     next();
 });
 
+// Middlewares
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
 // Rotas
-app.use('/admin', adminRoutes);
-app.use('/centro', centroRoutes);
-app.use('/report', reportRoutes);
-app.use('/user', userRoutes);
+app.use('/genre', genreRoute);
+app.use('/movie', movieRoute);
 
-app.use('/teste', (req, res) => {
-    res.send("Rota TESTE.");
-});
-
+// Rota padrão para outras solicitações
 app.use('/', (req, res) => {
-    res.send("Hello World");
+    res.send('Bem-vindo ao servidor de filmes e gêneros');
 });
 
-// Sincroniza os modelos com a base de dados
-sequelize.sync({ alter: true })
-  .then(() => {
-    app.listen(app.get('port'), () => {
-      console.log(`Servidor iniciado na porta ${app.get('port')}`);
-    });
-  })
-  .catch((error) => {
-    console.error('Erro ao sincronizar com a base de dados:', error);
-  });
+// Função para adicionar dados de exemplo nas tabelas quando elas forem criadas pela primeira vez
+const addSampleData = async () => {
+    const Genero = require('./models/genre'); // Moved inside the function
+    const Filme = require('./models/movie');  // Moved inside the function
 
-// multer:configurations
-const multer = require('multer');
+    try {
+        // Verificar se as tabelas já existem
+        const generosExists = await sequelize.queryInterface.describeTable('generos').then(() => true).catch(() => false);
+        const filmesExists = await sequelize.queryInterface.describeTable('filmes').then(() => true).catch(() => false);
 
-// Configuração do armazenamento de arquivos
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, '../uploads')); // Modificado para garantir o caminho correto
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, uniqueSuffix + path.extname(file.originalname)); // Nome do arquivo no destino
-  }
+        if (!generosExists) {
+            await Genero.sync();
+            await Genero.bulkCreate([
+                { descricao: 'Ação' },
+                { descricao: 'Comédia' },
+                { descricao: 'Drama' }
+            ]);
+            console.log('Tabela de gêneros criada e dados de exemplo inseridos.');
+        }
+
+        if (!filmesExists) {
+            await Filme.sync();
+            await Filme.bulkCreate([
+                { titulo: 'Rambo', descricao: 'Descrição do Rambo', foto: '128aac1b200256fe0c75d9ae0b3e8227', generoId: 1 },
+                { titulo: 'Senhor dos Anéis', descricao: 'Descrição do Filme 2', foto: 'f98d6890f55db711a4c6485c902074d8', generoId: 1 },
+            ]);
+            console.log('Tabela de filmes criada e dados de exemplo inseridos.');
+        }
+    } catch (error) {
+        console.error('Erro ao adicionar dados de exemplo:', error);
+    }
+};
+
+// Chamar a função para adicionar dados de exemplo
+addSampleData();
+
+// Iniciar o servidor
+app.listen(app.get('port'), () => {
+    console.log("Servidor iniciado na porta " + app.get('port'));
 });
-
-// Instância do multer com as configurações
-const upload = multer({ storage });
-
-module.exports = upload;
