@@ -1,4 +1,7 @@
-const { User, Area, UserArea } = require('../models');
+const User = require('../models/User');
+const Area = require('../models/Area');
+const UserArea = require('../models/UserArea');
+
 
 // Adicionar uma área de interesse a um usuário
 exports.addUserArea = async (req, res) => {
