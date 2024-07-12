@@ -133,7 +133,7 @@ const User = sequelize.define('User', {
             {
               nome: 'Jane Smith',
               email: 'jane.smith@example.com',
-              password: hashedPasswordJane,
+              password: await bcrypt.hash('senhasupersegura', salt), 
               fotoUrl: 'https://backend-ai2-proj.onrender.com/uploads/profile.jpg',
               Ativo: true,
               centroId: 2, // ID do centro ao qual Jane Smith está associada
