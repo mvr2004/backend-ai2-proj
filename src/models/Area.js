@@ -1,7 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../configs/database');
 
-//Modelo Area
 const Area = sequelize.define('Area', {
   id: {
     type: DataTypes.INTEGER,
@@ -11,11 +10,31 @@ const Area = sequelize.define('Area', {
   nomeArea: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true 
+    unique: true
   },
 }, {
-  timestamps: false 
+  timestamps: false,
+  hooks: {
+    afterSync: async () => {
+      try {
+        const existingAreas = await Area.count();
+        if (existingAreas === 0) {
+          await Area.bulkCreate([
+            { nomeArea: 'Saúde' },
+            { nomeArea: 'Desporto' },
+            { nomeArea: 'Formação' },
+            { nomeArea: 'Gastronomia' },
+            { nomeArea: 'Habitação/Alojamento' },
+            { nomeArea: 'Transportes' },
+            { nomeArea: 'Lazer' }
+            // Adicione mais áreas conforme necessário
+          ]);
+        }
+      } catch (error) {
+        console.error('Erro ao inserir dados pré-definidos de Área:', error);
+      }
+    }
+  }
 });
 
-//Exportar modelo
 module.exports = Area;
