@@ -11,6 +11,7 @@ router.get('/listByCentro/:centroId', eventoController.getEventosByCentro);
 
 
 
+
 router.post('/addpart', participacaoEventoController.addParticipacao);
 router.delete('/removepart', participacaoEventoController.removeParticipacao);
 

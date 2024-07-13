@@ -85,7 +85,17 @@ const Evento = sequelize.define('Evento', {
                             utilizadorId: 1, 
                             centroId: 1 
                         }
-                        // Adicione mais registros conforme necessário
+                                                {
+                            nome: 'Evento de karts',
+                            localizacao: 'Vila Nova do Paiva',
+                            data: '2024-09-20',
+                            hora: '14:30:00',
+                            descricao: 'Venha connosco acelarar e sentir o cheiro a gasolina em Vila Nova Do Paiva',
+                            ativo: true,
+                            subareaId: 10, 
+                            utilizadorId: 1, 
+                            centroId: 2 
+                        }
                     ]);
                 }
             } catch (error) {
