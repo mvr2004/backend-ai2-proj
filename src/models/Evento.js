@@ -4,7 +4,6 @@ const Subarea = require('./Subarea');
 const Utilizador = require('./User');
 const Centro = require('./Centro');
 
-
 const Evento = sequelize.define('Evento', {
     id: {
         type: DataTypes.INTEGER,
@@ -71,32 +70,22 @@ const Evento = sequelize.define('Evento', {
                             hora: '10:00:00',
                             descricao: 'Venha jogar a bola connosco',
                             ativo: true,
-                            subareaId: 3,
-                            utilizadorId: 1,
-                            centroId: 1
+                            subareaId: 3, 
+                            utilizadorId: 1, 
+                            centroId: 1 
                         },
                         {
                             nome: 'Evento de karts',
                             localizacao: 'Vila Nova do Paiva',
                             data: '2024-09-20',
                             hora: '14:30:00',
-                            descricao: 'Venha connosco acelerar e sentir o cheiro a gasolina em Vila Nova Do Paiva',
+                            descricao: 'Venha connosco acelarar e sentir o cheiro a gasolina em Vila Nova Do Paiva',
                             ativo: true,
-                            subareaId: 10,
-                            utilizadorId: 1,
-                            centroId: 1
-                        },
-                        {
-                            nome: 'Evento de karts',
-                            localizacao: 'Vila Nova do Paiva',
-                            data: '2024-09-20',
-                            hora: '14:30:00',
-                            descricao: 'Venha connosco acelerar e sentir o cheiro a gasolina em Vila Nova Do Paiva',
-                            ativo: true,
-                            subareaId: 10,
-                            utilizadorId: 1,
-                            centroId: 2
+                            subareaId: 10, 
+                            utilizadorId: 1, 
+                            centroId: 1 
                         }
+                        // Adicione mais registros conforme necessário
                     ]);
                 }
             } catch (error) {
@@ -105,7 +94,6 @@ const Evento = sequelize.define('Evento', {
         }
     }
 });
-
 
 Subarea.hasMany(Evento, { foreignKey: 'subareaId' });
 Evento.belongsTo(Subarea, { foreignKey: 'subareaId' });
@@ -116,6 +104,4 @@ Evento.belongsTo(Utilizador, { foreignKey: 'utilizadorId' });
 Centro.hasMany(Evento, { foreignKey: 'centroId' });
 Evento.belongsTo(Centro, { foreignKey: 'centroId' });
 
-
 module.exports = Evento;
-
