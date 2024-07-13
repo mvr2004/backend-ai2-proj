@@ -18,4 +18,8 @@ router.get('/search', userController.findUser);
 // Rota para filtrar utilizadores por estado ativo ou inativo
 router.get('/filter', userController.filterUsers);
 
+
+// Rota para listar usuários por centroId
+router.get('/filterByCentro/:centroId', userController.filterUsersByCentro);
+
 module.exports = router;

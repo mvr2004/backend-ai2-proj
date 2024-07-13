@@ -68,7 +68,10 @@ userController.updateUser = async (req, res) => {
 const listUsers = async (req, res) => {
   try {
     const utilizadores = await User.findAll({
-      include: Centro // Inclui o modelo Centro para acessar o nome do centro
+      include: {
+        model: Centro, // Inclui o modelo Centro para acessar o nome do centro
+        attributes: ['centro'] // Atributo que será retornado (nome do centro)
+      }
     });
     res.status(200).json(utilizadores);
   } catch (error) {
@@ -117,5 +120,22 @@ userController.filterUsers = async (req, res) => {
     res.status(500).json({ message: 'Erro ao tentar filtrar os utilizadores', error });
   }
 };
+
+// Filtrar usuários por centroId
+userController.filterUsersByCentro = async (req, res) => {
+  const { centroId } = req.params;
+
+  try {
+    const utilizadores = await User.findAll({
+      where: {
+        centroId: centroId
+      }
+    });
+    res.status(200).json(utilizadores);
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao tentar filtrar os utilizadores por centro', error });
+  }
+};
+
 
 module.exports = userController;
