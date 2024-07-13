@@ -15,6 +15,9 @@ router.get('/list', userController.listUsers);
 // Rota para buscar usuário por nome, ID ou email
 router.get('/find', userController.findUser);
 
+//Rota para listar utilizador por nome, ID ou email
+router.get('/search', userController.findUser);
+
 // Rota para filtrar usuários por status (ativo/inativo)
 router.get('/filter', userController.filterUsers);
 
