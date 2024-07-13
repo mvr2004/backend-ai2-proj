@@ -82,22 +82,36 @@ userController.searchUsers = async (req, res) => {
     const { search } = req.query;
     const searchQuery = search.toLowerCase(); // Converta para minúsculas para busca insensível a maiúsculas/minúsculas
 
-    const users = await User.findAll({
-      where: {
-        [Op.or]: [
-          { nome: { [Op.iLike]: `%${searchQuery}%` } }, // iLike para busca insensível a maiúsculas/minúsculas no PostgreSQL
-          { email: { [Op.iLike]: `%${searchQuery}%` } },
-          { id: searchQuery } // Procura por ID
-        ]
-      },
-      include: Centro // Inclua o modelo Centro para acessar os dados do centro
-    });
+    let users;
+    if (!isNaN(searchQuery)) { // Verifica se searchQuery é um número
+      users = await User.findAll({
+        where: {
+          [Op.or]: [
+            { nome: { [Op.iLike]: `%${searchQuery}%` } }, // iLike para busca insensível a maiúsculas/minúsculas no PostgreSQL
+            { email: { [Op.iLike]: `%${searchQuery}%` } },
+            { id: searchQuery } // Procura por ID apenas se searchQuery for um número
+          ]
+        },
+        include: Centro // Inclua o modelo Centro para acessar os dados do centro
+      });
+    } else {
+      users = await User.findAll({
+        where: {
+          [Op.or]: [
+            { nome: { [Op.iLike]: `%${searchQuery}%` } },
+            { email: { [Op.iLike]: `%${searchQuery}%` } }
+          ]
+        },
+        include: Centro // Inclua o modelo Centro para acessar os dados do centro
+      });
+    }
 
     res.status(200).json(users);
   } catch (error) {
     res.status(500).json({ message: 'Erro ao buscar o utilizador', error });
   }
 };
+
 
 // Filtrar utilizadors por estado ativo ou inativo
 userController.filterUsers = async (req, res) => {
