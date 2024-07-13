@@ -43,7 +43,7 @@ controllers.login = async (req, res) => {
 
     const token = jwt.sign({ id: admin.id }, JWT_SECRET_KEY, { expiresIn: '1h' });
 
-    res.status(200).json({ message: 'O login foi bem-sucedido', token });
+    res.status(200).json({ message: 'O login foi bem-sucedido', token, idCentro: admin.centroId });
   } catch (error) {
     res.status(500).json({ message: 'Erro durante ao fazer o login', error });
   }
