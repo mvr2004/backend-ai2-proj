@@ -82,7 +82,6 @@ userController.addUser = async (req, res) => {
 
 
 // Atualizar um utilizador
-// updateUser no userController.js
 userController.updateUser = async (req, res) => {
   try {
     const { id } = req.params;
