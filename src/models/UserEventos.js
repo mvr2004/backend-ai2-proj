@@ -1,5 +1,3 @@
-// models/ParticipacaoEvento.js
-
 const { DataTypes } = require('sequelize');
 const sequelize = require('../configs/database');
 const Utilizador = require('./User');
@@ -28,28 +26,11 @@ const ParticipacaoEvento = sequelize.define('ParticipacaoEvento', {
                 const existingParticipacoes = await ParticipacaoEvento.count();
                 if (existingParticipacoes === 0) {
                     await ParticipacaoEvento.bulkCreate([
-                        {
-                            utilizadorId: 1, 
-                            eventoId: 1 
-                        },
-						{
-                            utilizadorId: 2, 
-                            eventoId: 1 
-                        },
-						{
-                            utilizadorId: 3, 
-                            eventoId: 1 
-                        },
-						{
-                            utilizadorId: 1, 
-                            eventoId: 2 
-                        },
-						
-                        {
-                            utilizadorId: 2, 
-                            eventoId: 2 
-                        }
-                        
+                        { utilizadorId: 1, eventoId: 1 },
+                        { utilizadorId: 2, eventoId: 1 },
+                        { utilizadorId: 3, eventoId: 1 },
+                        { utilizadorId: 1, eventoId: 2 },
+                        { utilizadorId: 2, eventoId: 2 }
                     ]);
                 }
             } catch (error) {
