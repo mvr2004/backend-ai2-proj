@@ -8,7 +8,7 @@ const userController = {};
 // Adicionar um novo utilizador
 userController.addUser = async (req, res) => {
   try {
-    const { nome, email, password, centroId } = req.body;
+    const { nome, email, password, centroNome } = req.body;
     const fotoUrl = req.file ? 'https://backend-ai2-proj.onrender.com/uploads/' + req.file.filename : null;
 
     // Verifique se o email já está em uso
@@ -17,41 +17,44 @@ userController.addUser = async (req, res) => {
       return res.status(400).json({ message: 'Email já está em uso' });
     }
 
-    // Crie o novo utilizador
-    const user = await User.create({ nome, email, password, fotoUrl, centroId });
+    // Busca o centro pelo nome
+    const centro = await Centro.findOne({ where: { centro: centroNome } });
+    if (!centro) {
+      return res.status(404).json({ message: 'Centro não encontrado' });
+    }
+
+    // Crie o novo usuário
+    const user = await User.create({ nome, email, password, fotoUrl, centroId: centro.id });
     res.status(201).json(user);
   } catch (error) {
     res.status(400).json({ message: 'Erro ao tentar adicionar o utilizador', error });
   }
 };
 
+
 // Atualizar um utilizador
 userController.updateUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const { nome, email, password, centroId, ativo, notas } = req.body;
+    const { nome, email, password, centroNome, ativo, notas } = req.body;
     let fotoUrl = req.body.fotoUrl || 'https://backend-ai2-proj.onrender.com/uploads/profile.jpg'; // Default profile picture URL
 
     if (req.file) {
       fotoUrl = 'https://backend-ai2-proj.onrender.com/uploads/' + req.file.filename;
     }
 
-    // Busca o usuário pelo ID incluindo os dados do centro associado
-    const user = await User.findByPk(id, {
-      include: Centro
-    });
+    // Busca o usuário pelo ID
+    const user = await User.findByPk(id);
 
     if (!user) {
       return res.status(404).json({ message: 'Utilizador não encontrado' });
     }
 
     // Atualiza os dados do usuário
-    await user.update({ nome, email, password, centroId, ativo, notas, fotoUrl });
+    await user.update({ nome, email, password, centroNome, ativo, notas, fotoUrl });
 
-    // Retorna os dados atualizados do usuário (incluindo o centro)
-    const updatedUser = await User.findByPk(id, {
-      include: Centro
-    });
+    // Retorna os dados atualizados do usuário
+    const updatedUser = await User.findByPk(id);
 
     res.status(200).json(updatedUser);
   } catch (error) {
