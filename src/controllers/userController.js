@@ -1,15 +1,18 @@
+// userController.js
+
 const { Op } = require('sequelize');
 const User = require('../models/User');
+const Centro = require('../models/Centro'); // Importe o modelo Centro se necessário
 const path = require('path');
-const upload = require('../configs/multer'); // Importe o módulo multer configurado
+const upload = require('../configs/multer'); // Importe o multer configurado
 
 const userController = {};
 
-// Adicionar um novo utilizador
+// Adicionar um novo usuário
 userController.addUser = async (req, res) => {
   try {
     const { nome, email, password, notas, centroId } = req.body;
-    const fotoUrl = req.file ? '/uploads/' + req.file.filename : null; // Link completo da foto
+    const fotoUrl = req.file ? '/uploads/' + req.file.filename : null;
 
     // Verifique se o email já está em uso
     const existingUser = await User.findOne({ where: { email } });
@@ -17,75 +20,68 @@ userController.addUser = async (req, res) => {
       return res.status(400).json({ message: 'Email já está em uso' });
     }
 
-    // Se o email não está em uso, crie o novo utilizador
-    const utilizador = await User.create({ nome, email, password, fotoUrl, notas, centroId });
-    res.status(201).json(utilizador);
+    // Crie o novo usuário
+    const user = await User.create({ nome, email, password, fotoUrl, notas, centroId });
+    res.status(201).json(user);
   } catch (error) {
-    res.status(400).json({ message: 'Erro ao tentar adicionar o utilizador', error });
+    res.status(400).json({ message: 'Erro ao tentar adicionar o usuário', error });
   }
 };
 
-// Atualizar um utilizador
+// Atualizar um usuário
 userController.updateUser = async (req, res) => {
   const { id } = req.params;
   const { nome, email, password, notas, centroId } = req.body;
 
   try {
-    const utilizador = await User.findByPk(id);
-    if (!utilizador) {
-      return res.status(404).json({ message: 'Utilizador não encontrado' });
+    const user = await User.findByPk(id);
+    if (!user) {
+      return res.status(404).json({ message: 'Usuário não encontrado' });
     }
 
     // Verifique se o novo email está em uso por outro usuário
-    if (email && email !== utilizador.email) {
+    if (email && email !== user.email) {
       const existingUser = await User.findOne({ where: { email } });
       if (existingUser) {
-        return res.status(400).json({ message: 'Email já está em uso por outro utilizador' });
+        return res.status(400).json({ message: 'Email já está em uso por outro usuário' });
       }
     }
 
-    // Atualize apenas os campos fornecidos
-    utilizador.nome = nome || utilizador.nome;
-    utilizador.email = email || utilizador.email;
-    utilizador.password = password || utilizador.password;
-    utilizador.notas = notas || utilizador.notas;
-    utilizador.centroId = centroId || utilizador.centroId;
+    // Atualize os campos fornecidos
+    user.nome = nome || user.nome;
+    user.email = email || user.email;
+    user.password = password || user.password;
+    user.notas = notas || user.notas;
+    user.centroId = centroId || user.centroId;
 
     if (req.file) {
-      // Se houver um novo arquivo de foto, atualize a fotoUrl com o link completo
-      utilizador.fotoUrl = '/uploads/' + req.file.filename;
+      user.fotoUrl = '/uploads/' + req.file.filename;
     }
 
-    await utilizador.save();
-    // Certifique-se de retornar o utilizador atualizado com o link completo da foto
-    res.status(200).json(utilizador);
+    await user.save();
+    res.status(200).json(user);
   } catch (error) {
-    res.status(400).json({ message: 'Erro ao tentar atualizar o utilizador', error });
+    res.status(400).json({ message: 'Erro ao tentar atualizar o usuário', error });
   }
 };
 
-// Listar todos os utilizadores
-const listUsers = async (req, res) => {
+// Listar todos os usuários
+userController.listUsers = async (req, res) => {
   try {
-    const utilizadores = await User.findAll({
-      include: {
-        model: Centro, // Inclui o modelo Centro para acessar o nome do centro
-        attributes: ['centro'] // Atributo que será retornado (nome do centro)
-      }
+    const users = await User.findAll({
+      include: Centro // Inclua o modelo Centro para acessar os dados do centro
     });
-    res.status(200).json(utilizadores);
+    res.status(200).json(users);
   } catch (error) {
-    res.status(500).json({ message: 'Erro ao tentar listar os utilizadores', error });
+    res.status(500).json({ message: 'Erro ao listar os usuários', error });
   }
 };
 
-// Listar utilizador por nome, ID ou email
+// Buscar usuário por nome, ID ou email
 userController.findUser = async (req, res) => {
   try {
     const { search } = req.query;
-
-    // Verifica se o search é um número para buscar por ID
-    const whereCondition = isNaN(search) 
+    const whereCondition = isNaN(search)
       ? {
           [Op.or]: [
             { nome: { [Op.like]: `%${search}%` } },
@@ -94,30 +90,27 @@ userController.findUser = async (req, res) => {
         }
       : { id: search };
 
-    const utilizadores = await User.findAll({
+    const users = await User.findAll({
       where: whereCondition
     });
 
-    res.status(200).json(utilizadores);
+    res.status(200).json(users);
   } catch (error) {
-    console.error('Erro ao buscar utilizador:', error);
-    res.status(500).json({ message: 'Erro ao tentar encontrar o utilizador', error });
+    res.status(500).json({ message: 'Erro ao buscar o usuário', error });
   }
 };
 
-// Filtrar utilizadores por estado ativo ou inativo
+// Filtrar usuários por estado ativo ou inativo
 userController.filterUsers = async (req, res) => {
   try {
     const { status } = req.query;
     const isActive = status === 'ativo';
-    const utilizadores = await User.findAll({
-      where: {
-        Ativo: isActive
-      }
+    const users = await User.findAll({
+      where: { Ativo: isActive }
     });
-    res.status(200).json(utilizadores);
+    res.status(200).json(users);
   } catch (error) {
-    res.status(500).json({ message: 'Erro ao tentar filtrar os utilizadores', error });
+    res.status(500).json({ message: 'Erro ao filtrar os usuários', error });
   }
 };
 
@@ -126,16 +119,13 @@ userController.filterUsersByCentro = async (req, res) => {
   const { centroId } = req.params;
 
   try {
-    const utilizadores = await User.findAll({
-      where: {
-        centroId: centroId
-      }
+    const users = await User.findAll({
+      where: { centroId }
     });
-    res.status(200).json(utilizadores);
+    res.status(200).json(users);
   } catch (error) {
-    res.status(500).json({ message: 'Erro ao tentar filtrar os utilizadores por centro', error });
+    res.status(500).json({ message: 'Erro ao filtrar os usuários por centro', error });
   }
 };
-
 
 module.exports = userController;
