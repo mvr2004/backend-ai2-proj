@@ -55,7 +55,7 @@ userController.updateUser = async (req, res) => {
     user.centroId = centroId || user.centroId;
 
     if (req.file) {
-      user.fotoUrl = '/uploads/' + req.file.filename;
+      user.fotoUrl = 'https://backend-ai2-proj.onrender.com//uploads/' + req.file.filename;
     }
 
     await user.save();
