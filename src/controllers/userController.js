@@ -12,7 +12,7 @@ const userController = {};
 userController.addUser = async (req, res) => {
   try {
     const { nome, email, password, notas, centroId } = req.body;
-    const fotoUrl = req.file ? '/uploads/' + req.file.filename : null;
+    const fotoUrl = req.file ? 'https://backend-ai2-proj.onrender.com/uploads/' + req.file.filename : null;
 
     // Verifique se o email já está em uso
     const existingUser = await User.findOne({ where: { email } });
