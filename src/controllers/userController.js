@@ -14,13 +14,13 @@ userController.updateUser = async (req, res) => {
     const { id } = req.params;
     const { nome, email, password, centroId, Ativo, notas, fotoUrl } = req.body;
 
-    // Verifica se o usuário existe
+    // Verifica se o utilizador existe
     const user = await User.findByPk(id);
     if (!user) {
       return res.status(404).json({ message: 'Usuário não encontrado' });
     }
 
-    // Atualiza os campos do usuário
+    // Atualiza os campos do utilizador
     user.nome = nome;
     user.email = email;
     if (password) {
@@ -35,11 +35,11 @@ userController.updateUser = async (req, res) => {
 
     await user.save();
 
-    // Retorna o usuário atualizado
+    // Retorna o utilizador atualizado
     res.status(200).json(user);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Erro ao atualizar o usuário', error });
+    res.status(500).json({ message: 'Erro ao atualizar o utilizador', error });
   }
 };
 
@@ -68,7 +68,7 @@ userController.addUser = async (req, res) => {
     // Criptografar a senha
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Crie o novo usuário
+    // Crie o novo utilizador
     const user = await User.create({ nome, email, password: hashedPassword, fotoUrl: foto, centroId });
     res.status(201).json(user);
   } catch (error) {
@@ -85,13 +85,13 @@ userController.updateUser = async (req, res) => {
     const { id } = req.params;
     const { nome, email, password, centroId, Ativo, notas, fotoUrl } = req.body;
 
-    // Verifica se o usuário existe
+    // Verifica se o utilizador existe
     const user = await User.findByPk(id);
     if (!user) {
       return res.status(404).json({ message: 'Usuário não encontrado' });
     }
 
-    // Atualiza os campos do usuário
+    // Atualiza os campos do utilizador
     user.nome = nome;
     user.email = email;
     if (password) {
@@ -106,11 +106,11 @@ userController.updateUser = async (req, res) => {
 
     await user.save();
 
-    // Retorna o usuário atualizado
+    // Retorna o utilizador atualizado
     res.status(200).json(user);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Erro ao atualizar o usuário', error });
+    res.status(500).json({ message: 'Erro ao atualizar o utilizador', error });
   }
 };
 
@@ -204,13 +204,13 @@ userController.deleteUser = async (req, res) => {
       return res.status(404).json({ message: 'Usuário não encontrado' });
     }
 
-    // Tentar excluir o usuário
+    // Tentar excluir o utilizador
     const deletedUser = await User.destroy({
       where: { id }
     });
 
     if (deletedUser === 0) {
-      // Se o usuário não foi excluído (deletedUser === 0), inative o usuário
+      // Se o utilizador não foi excluído (deletedUser === 0), inative o utilizador
       user.ativo = false;
       await user.save();
       return res.status(200).json({ message: 'Usuário inativado com sucesso' });
@@ -218,7 +218,7 @@ userController.deleteUser = async (req, res) => {
 
     res.status(200).json({ message: 'Usuário excluído com sucesso' });
   } catch (error) {
-    res.status(500).json({ message: 'Erro ao tentar excluir ou inativar o usuário', error });
+    res.status(500).json({ message: 'Erro ao tentar excluir ou inativar o utilizador', error });
   }
 };
 

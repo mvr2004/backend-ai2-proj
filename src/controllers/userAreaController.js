@@ -4,8 +4,8 @@ const UserArea = require('../models/UserArea');
 
 
 // Adicionar uma área de interesse a um usuário
-exports.addUserArea = async (req, res) => {
-  const { userId, areaId } = req.body;
+exports.addUserAreas = async (req, res) => {
+  const { userId, areaIds } = req.body;
 
   try {
     const user = await User.findByPk(userId);
@@ -13,26 +13,16 @@ exports.addUserArea = async (req, res) => {
       return res.status(404).json({ error: 'Usuário não encontrado' });
     }
 
-    const area = await Area.findByPk(areaId);
-    if (!area) {
-      return res.status(404).json({ error: 'Área não encontrada' });
-    }
+    // Remove todas as áreas de interesse atuais do usuário
+    await UserArea.destroy({ where: { userId } });
 
-    // Verifica se a relação já existe
-    const existingUserArea = await UserArea.findOne({
-      where: { userId, areaId }
-    });
+    // Adiciona as novas áreas de interesse
+    const newUserAreas = areaIds.map(areaId => ({ userId, areaId }));
+    await UserArea.bulkCreate(newUserAreas);
 
-    if (existingUserArea) {
-      return res.status(400).json({ error: 'Usuário já tem interesse nesta área' });
-    }
-
-    // Cria a relação UserArea
-    await UserArea.create({ userId, areaId });
-
-    return res.status(201).json({ message: 'Área de interesse adicionada com sucesso' });
+    return res.status(201).json({ message: 'Áreas de interesse atualizadas com sucesso' });
   } catch (error) {
-    console.error('Erro ao adicionar área de interesse ao usuário:', error);
+    console.error('Erro ao atualizar áreas de interesse do usuário:', error);
     return res.status(500).json({ error: 'Erro interno do servidor' });
   }
 };
