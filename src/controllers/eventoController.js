@@ -56,6 +56,7 @@ exports.getEventosByCentro = async (req, res) => {
     }
 };
 
+
 // Inserir um novo evento
 exports.createEvento = async (req, res) => {
     const { nome, localizacao, data, hora, descricao, subareaId, utilizadorId, centroId } = req.body;
