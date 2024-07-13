@@ -15,4 +15,8 @@ router.put('/update/:id', reportController.updateReportStatus);
 // Rota para criar um novo report com upload de foto
 router.post('/reports', upload.single('image'), reportController.createReport);
 
+
+// Rota para contar os reports, dividindo em ativos e inativos
+router.get('/count-reports', reportController.countReports);
+
 module.exports = router;

@@ -15,6 +15,8 @@ router.get('/listsub', subareaController.listSubareas);
 router.post('/createsub', subareaController.createSubarea);
 router.put('/updatesub/:id', subareaController.updateSubarea);
 router.delete('/delsub/:id', subareaController.deleteSubarea);
+router.get('/count-subareas-and-areas', subareaController.countSubareasAndAreas); // Nova rota para contar subáreas e áreas
+
 
 
 // Rota para adicionar área de interesse a um usuário

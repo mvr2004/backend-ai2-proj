@@ -62,3 +62,15 @@ exports.deleteSubarea = async (req, res) => {
     res.status(500).json({ error: 'Erro ao deletar subárea' });
   }
 };
+
+
+exports.countSubareasAndAreas = async (req, res) => {
+  try {
+    const subareaCount = await Subarea.count();
+    const areaCount = await Area.count();
+    res.json({ subareaCount, areaCount });
+  } catch (error) {
+    console.error('Erro ao contar subáreas e áreas:', error);
+    res.status(500).json({ error: 'Erro ao contar subáreas e áreas' });
+  }
+};

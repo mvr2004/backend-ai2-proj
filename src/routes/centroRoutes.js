@@ -6,5 +6,6 @@ router.get('/list', centroController.listCentros);
 router.post('/create', centroController.createCentro);
 router.put('/update/:id', centroController.updateCentro);
 router.delete('/delete/:id', centroController.deleteCentro);
+router.get('/count', centroController.countCentros);
 
 module.exports = router;

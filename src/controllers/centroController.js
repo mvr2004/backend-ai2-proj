@@ -142,4 +142,14 @@ centroController.deleteCentro = async (req, res) => {
   }
 };
 
+
+centroController.countCentros = async (req, res) => {
+  try {
+    const count = await Centro.count();
+    res.status(200).json({ totalCentros: count });
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao tentar contar os centros', error });
+  }
+};
+
 module.exports = centroController;

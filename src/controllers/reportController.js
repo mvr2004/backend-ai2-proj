@@ -86,4 +86,20 @@ reportController.createReport = async (req, res) => {
   }
 };
 
+
+// Contar os reports, dividindo em ativos e inativos
+reportController.countReports = async (req, res) => {
+  try {
+    const activeCount = await Report.count({ where: { resolvido: false } });
+    const resolvedCount = await Report.count({ where: { resolvido: true } });
+
+    res.status(200).json({
+      activeReports: activeCount,
+      resolvedReports: resolvedCount
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao contar os reports', error });
+  }
+};
+
 module.exports = reportController;
