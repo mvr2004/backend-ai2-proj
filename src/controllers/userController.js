@@ -223,4 +223,22 @@ userController.deleteUser = async (req, res) => {
 };
 
 
+// Contar utilizadores totais, ativos e inativos
+userController.countUsers = async (req, res) => {
+  try {
+    const totalUsers = await User.count();
+    const activeUsers = await User.count({ where: { Ativo: true } });
+    const inactiveUsers = await User.count({ where: { Ativo: false } });
+
+    res.status(200).json({
+      totalUsers,
+      activeUsers,
+      inactiveUsers
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao contar os utilizadores', error });
+  }
+};
+
+
 module.exports = userController;

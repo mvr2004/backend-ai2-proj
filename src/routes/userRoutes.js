@@ -24,4 +24,8 @@ router.get('/filterByCentro/:centroId', userController.filterUsersByCentro);
 // Rota para deletar um usuário
 router.delete('/delete/:id', userController.deleteUser);
 
+// Rota para contar os utilizadores totais, ativos e inativos
+router.get('/count', userController.countUsers);
+
+
 module.exports = router;
