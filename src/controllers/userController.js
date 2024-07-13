@@ -4,6 +4,11 @@ const Centro = require('../models/Centro');
 const upload = require('../configs/multer');
 const bcrypt = require('bcrypt');
 
+
+const userController = {};
+
+
+
 userController.updateUser = async (req, res) => {
   try {
     const { id } = req.params;
