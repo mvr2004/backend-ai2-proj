@@ -8,8 +8,11 @@ const userController = {};
 // Adicionar um novo utilizador
 userController.addUser = async (req, res) => {
   try {
-    const { nome, email, password, centroNome } = req.body;
-    const fotoUrl = req.file ? 'https://backend-ai2-proj.onrender.com/uploads/' + req.file.filename : null;
+    const { nome, email, password, centroId, fotoUrl } = req.body;
+
+    // Definir fotoUrl como padrão se não for fornecida
+    const defaultFotoUrl = 'https://backend-ai2-proj.onrender.com/uploads/profile.jpg';
+    const foto = fotoUrl || defaultFotoUrl;
 
     // Verifique se o email já está em uso
     const existingUser = await User.findOne({ where: { email } });
@@ -17,14 +20,14 @@ userController.addUser = async (req, res) => {
       return res.status(400).json({ message: 'Email já está em uso' });
     }
 
-    // Busca o centro pelo nome
-    const centro = await Centro.findOne({ where: { centro: centroNome } });
+    // Verifique se o centro existe
+    const centro = await Centro.findByPk(centroId);
     if (!centro) {
       return res.status(404).json({ message: 'Centro não encontrado' });
     }
 
     // Crie o novo usuário
-    const user = await User.create({ nome, email, password, fotoUrl, centroId: centro.id });
+    const user = await User.create({ nome, email, password, fotoUrl: foto, centroId });
     res.status(201).json(user);
   } catch (error) {
     res.status(400).json({ message: 'Erro ao tentar adicionar o utilizador', error });
@@ -32,11 +35,13 @@ userController.addUser = async (req, res) => {
 };
 
 
+
+
 // Atualizar um utilizador
 userController.updateUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const { nome, email, password, centroNome, ativo, notas } = req.body;
+    const { nome, email, password, centroId, ativo, notas } = req.body;
     let fotoUrl = req.body.fotoUrl || 'https://backend-ai2-proj.onrender.com/uploads/profile.jpg'; // Default profile picture URL
 
     if (req.file) {
@@ -51,7 +56,7 @@ userController.updateUser = async (req, res) => {
     }
 
     // Atualiza os dados do usuário
-    await user.update({ nome, email, password, centroNome, ativo, notas, fotoUrl });
+    await user.update({ nome, email, password, centroId, ativo, notas, fotoUrl });
 
     // Retorna os dados atualizados do usuário
     const updatedUser = await User.findByPk(id);
@@ -62,6 +67,7 @@ userController.updateUser = async (req, res) => {
     res.status(500).json({ message: 'Erro ao atualizar utilizador' });
   }
 };
+
 
 // Listar todos os utilizadores
 userController.listUsers = async (req, res) => {
