@@ -1,9 +1,7 @@
 const { Op } = require('sequelize');
 const User = require('../models/User');
-const Centro = require('../models/Centro'); // Importe o modelo Centro se necessário
-const path = require('path');
-const upload = require('../configs/multer'); // Importe o multer configurado
-const { uploadImage } = require('../utils/imageUpload'); // Importe a função de upload de imagem
+const Centro = require('../models/Centro');
+const upload = require('../configs/multer');
 
 const userController = {};
 
@@ -35,7 +33,7 @@ userController.updateUser = async (req, res) => {
     let fotoUrl = req.body.fotoUrl;
 
     if (req.file) {
-      fotoUrl = await uploadImage(req.file);
+      fotoUrl = 'https://backend-ai2-proj.onrender.com/uploads/' + req.file.filename;
     }
 
     const user = await User.findByPk(id);
@@ -44,7 +42,7 @@ userController.updateUser = async (req, res) => {
       return res.status(404).json({ message: 'Utilizador não encontrado' });
     }
 
-    await user.update({ nome, email, password, centroId, ativo, notas, foto: fotoUrl });
+    await user.update({ nome, email, password, centroId, ativo, notas, fotoUrl });
     res.status(200).json(user);
   } catch (error) {
     console.error(error);
@@ -126,7 +124,7 @@ userController.filterUsersByCentro = async (req, res) => {
     });
     res.status(200).json(users);
   } catch (error) {
-    res.status(500).json({ message: 'Erro ao filtrar os utilizadores por centro', error });
+    res.status{ 500).json({ message: 'Erro ao filtrar os utilizadores por centro', error });
   }
 };
 

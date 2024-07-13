@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
-const upload = require('../configs/multer'); // Importe o multer configurado se necessário
+const upload = require('../configs/multer');
 
 // Rota para adicionar um novo usuário
 router.post('/add', upload.single('foto'), userController.addUser);
