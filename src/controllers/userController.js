@@ -3,6 +3,7 @@ const User = require('../models/User');
 const Centro = require('../models/Centro'); // Importe o modelo Centro se necessário
 const path = require('path');
 const upload = require('../configs/multer'); // Importe o multer configurado
+const { uploadImage } = require('../utils/imageUpload'); // Importe a função de upload de imagem
 
 const userController = {};
 
@@ -26,45 +27,32 @@ userController.addUser = async (req, res) => {
   }
 };
 
-// Atualizar 
+// Atualizar um utilizador
 userController.updateUser = async (req, res) => {
-  const { id } = req.params;
-  const { nome, email, password, centroId, notas, ativo } = req.body;
-
   try {
-    const user = await User.findByPk(id);
-    if (!user) {
-      return res.status(404).json({ message: 'utilizador não encontrado' });
-    }
-
-    if (email && email !== user.email) {
-      const existingUser = await User.findOne({ where: { email } });
-      if (existingUser) {
-        return res.status(400).json({ message: 'Email já está em uso por outro utilizador' });
-      }
-    }
-
-    user.nome = nome || user.nome;
-    user.email = email || user.email;
-    user.password = password || user.password;
-    user.centroId = centroId || user.centroId;
-    user.notas = notas || user.notas;
-    user.ativo = ativo !== undefined ? ativo : user.ativo; // Atualiza o campo ativo se fornecido
+    const { id } = req.params;
+    const { nome, email, password, centroId, ativo, notas } = req.body;
+    let fotoUrl = req.body.fotoUrl;
 
     if (req.file) {
-      user.fotoUrl = 'https://backend-ai2-proj.onrender.com/uploads/' + req.file.filename;
+      fotoUrl = await uploadImage(req.file);
     }
 
-    await user.save();
+    const user = await User.findByPk(id);
+
+    if (!user) {
+      return res.status(404).json({ message: 'Utilizador não encontrado' });
+    }
+
+    await user.update({ nome, email, password, centroId, ativo, notas, foto: fotoUrl });
     res.status(200).json(user);
   } catch (error) {
-    res.status(400).json({ message: 'Erro ao tentar atualizar o utilizador', error });
+    console.error(error);
+    res.status(500).json({ message: 'Erro ao atualizar utilizador' });
   }
 };
 
-
-
-// Listar todos os utilizadors
+// Listar todos os utilizadores
 userController.listUsers = async (req, res) => {
   try {
     const users = await User.findAll({
@@ -72,11 +60,11 @@ userController.listUsers = async (req, res) => {
     });
     res.status(200).json(users);
   } catch (error) {
-    res.status(500).json({ message: 'Erro ao listar os utilizadors', error });
+    res.status(500).json({ message: 'Erro ao listar os utilizadores', error });
   }
 };
 
-// Buscar utilizador por nome, ID ou email
+// Buscar utilizadores por nome, ID ou email
 userController.searchUsers = async (req, res) => {
   try {
     const { search } = req.query;
@@ -112,23 +100,22 @@ userController.searchUsers = async (req, res) => {
   }
 };
 
-
-// Filtrar utilizadors por estado ativo ou inativo
+// Filtrar utilizadores por estado ativo ou inativo
 userController.filterUsers = async (req, res) => {
   try {
     const { status } = req.query;
     const isActive = status === 'ativo';
     const users = await User.findAll({
-      where: { Ativo: isActive },
+      where: { ativo: isActive },
       include: Centro // Inclua o modelo Centro para acessar os dados do centro
     });
     res.status(200).json(users);
   } catch (error) {
-    res.status(500).json({ message: 'Erro ao filtrar os utilizadors', error });
+    res.status(500).json({ message: 'Erro ao filtrar os utilizadores', error });
   }
 };
 
-// Filtrar utilizadors por centroId
+// Filtrar utilizadores por centroId
 userController.filterUsersByCentro = async (req, res) => {
   const { centroId } = req.params;
 
@@ -139,24 +126,24 @@ userController.filterUsersByCentro = async (req, res) => {
     });
     res.status(200).json(users);
   } catch (error) {
-    res.status(500).json({ message: 'Erro ao filtrar os utilizadors por centro', error });
+    res.status(500).json({ message: 'Erro ao filtrar os utilizadores por centro', error });
   }
 };
 
-// Deletar um utilizador
+// Deletar (inativar) um utilizador
 userController.deleteUser = async (req, res) => {
   const { id } = req.params;
 
   try {
     const user = await User.findByPk(id);
     if (!user) {
-      return res.status(404).json({ message: 'utilizador não encontrado' });
+      return res.status(404).json({ message: 'Utilizador não encontrado' });
     }
 
     user.ativo = false; // Define o utilizador como inativo
 
     await user.save();
-    res.status(200).json({ message: 'utilizador inativado com sucesso' });
+    res.status(200).json({ message: 'Utilizador inativado com sucesso' });
   } catch (error) {
     res.status(500).json({ message: 'Erro ao inativar o utilizador', error });
   }
