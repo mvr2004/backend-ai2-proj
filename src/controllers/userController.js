@@ -65,9 +65,11 @@ userController.updateUser = async (req, res) => {
 };
 
 // Listar todos os utilizadores
-userController.listUsers = async (req, res) => {
+const listUsers = async (req, res) => {
   try {
-    const utilizadores = await User.findAll();
+    const utilizadores = await User.findAll({
+      include: Centro // Inclui o modelo Centro para acessar o nome do centro
+    });
     res.status(200).json(utilizadores);
   } catch (error) {
     res.status(500).json({ message: 'Erro ao tentar listar os utilizadores', error });
