@@ -21,6 +21,31 @@ reportController.listReports = async (req, res) => {
   }
 };
 
+//Recebe um Report por ID
+reportController.getReportById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const report = await Report.findOne({
+      where: { id },
+      include: [
+        {
+          model: User,
+          attributes: ['id', 'nome', 'email']
+        }
+      ]
+    });
+
+    if (!report) {
+      return res.status(404).json({ message: 'Report não encontrado' });
+    }
+
+    res.status(200).json(report);
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao tentar encontrar o report', error });
+  }
+};
+
 // Atualizar o status de resolvido do report
 reportController.updateReportStatus = async (req, res) => {
   const { id } = req.params;
