@@ -7,6 +7,8 @@ router.get('/list', eventoController.getAllEventos);
 router.post('/criar', eventoController.createEvento);
 router.put('/update/:id', eventoController.updateEvento);
 router.delete('/del/:id', eventoController.deleteEvento);
+router.get('/listByCentro/:centroId', eventoController.getEventosByCentro);
+
 
 
 router.post('/addpart', participacaoEventoController.addParticipacao);

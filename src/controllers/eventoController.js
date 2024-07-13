@@ -6,8 +6,39 @@ const { Sequelize } = require('sequelize');
 
 // Ver todos os eventos com a contagem de participantes
 exports.getAllEventos = async (req, res) => {
+    const { centro } = req.query; // Get the centro from query parameters
+
+    const whereCondition = centro ? { centroId: centro } : {}; // Add centro condition if provided
+
     try {
         const eventos = await Evento.findAll({
+            attributes: {
+                include: [
+                    [Sequelize.fn('COUNT', Sequelize.col('ParticipacaoEventos.eventoId')), 'numeroDeParticipantes']
+                ]
+            },
+            include: [
+                {
+                    model: ParticipacaoEvento,
+                    attributes: []
+                }
+            ],
+            where: whereCondition, // Use the condition in the query
+            group: ['Evento.id']
+        });
+        res.json(eventos);
+    } catch (error) {
+        res.status(500).json({ error: 'Erro ao buscar eventos', details: error.message });
+    }
+};
+
+
+exports.getEventosByCentro = async (req, res) => {
+    const { centroId } = req.params;
+
+    try {
+        const eventos = await Evento.findAll({
+            where: { centroId },
             attributes: {
                 include: [
                     [Sequelize.fn('COUNT', Sequelize.col('ParticipacaoEventos.eventoId')), 'numeroDeParticipantes']
@@ -23,9 +54,10 @@ exports.getAllEventos = async (req, res) => {
         });
         res.json(eventos);
     } catch (error) {
-        res.status(500).json({ error: 'Erro ao buscar eventos' });
+        res.status(500).json({ error: 'Erro ao buscar eventos', details: error.message });
     }
 };
+
 
 // Inserir um novo evento
 exports.createEvento = async (req, res) => {
