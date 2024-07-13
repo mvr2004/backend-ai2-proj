@@ -115,7 +115,5 @@ Evento.belongsTo(Utilizador, { foreignKey: 'utilizadorId' });
 Centro.hasMany(Evento, { foreignKey: 'centroId' });
 Evento.belongsTo(Centro, { foreignKey: 'centroId' });
 
-Evento.belongsToMany(User, { through: ParticipacaoEvento, foreignKey: 'eventoId' });
-User.belongsToMany(Evento, { through: ParticipacaoEvento, foreignKey: 'utilizadorId' });
 
 module.exports = Evento;
