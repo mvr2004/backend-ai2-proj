@@ -84,7 +84,7 @@ const Evento = sequelize.define('Evento', {
                             subareaId: 10, 
                             utilizadorId: 1, 
                             centroId: 1 
-                        }
+                        },
                                                 {
                             nome: 'Evento de karts',
                             localizacao: 'Vila Nova do Paiva',
