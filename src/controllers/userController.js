@@ -124,7 +124,7 @@ userController.filterUsersByCentro = async (req, res) => {
     });
     res.status(200).json(users);
   } catch (error) {
-    res.status{ 500).json({ message: 'Erro ao filtrar os utilizadores por centro', error });
+    res.status(500).json({ message: 'Erro ao filtrar os utilizadores por centro', error });
   }
 };
 
