@@ -13,15 +13,15 @@ router.put('/update/:id', upload.single('foto'), userController.updateUser);
 router.get('/list', userController.listUsers);
 
 // Rota para buscar usuário por nome, ID ou email
-router.get('/find', userController.findUser);
-
-//Rota para listar utilizador por nome, ID ou email
-router.get('/search', userController.findUser);
+router.get('/search', userController.searchUsers);
 
 // Rota para filtrar usuários por status (ativo/inativo)
 router.get('/filter', userController.filterUsers);
 
 // Rota para filtrar usuários por centroId
 router.get('/filterByCentro/:centroId', userController.filterUsersByCentro);
+
+// Rota para deletar um usuário
+router.delete('/delete/:id', userController.deleteUser);
 
 module.exports = router;
