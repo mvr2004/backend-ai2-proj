@@ -38,35 +38,39 @@ userController.addUser = async (req, res) => {
 
 
 // Atualizar um utilizador
+// updateUser no userController.js
 userController.updateUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const { nome, email, password, centroId, ativo, notas } = req.body;
-    let fotoUrl = req.body.fotoUrl || 'https://backend-ai2-proj.onrender.com/uploads/profile.jpg'; // Default profile picture URL
+    const { nome, email, password, centroId, Ativo, notas, fotoUrl } = req.body; // Certifique-se de que 'Ativo' está sendo corretamente extraído
 
-    if (req.file) {
-      fotoUrl = 'https://backend-ai2-proj.onrender.com/uploads/' + req.file.filename;
-    }
-
-    // Busca o usuário pelo ID
+    // Verifica se o usuário existe
     const user = await User.findByPk(id);
-
     if (!user) {
-      return res.status(404).json({ message: 'Utilizador não encontrado' });
+      return res.status(404).json({ message: 'Usuário não encontrado' });
     }
 
-    // Atualiza os dados do usuário
-    await user.update({ nome, email, password, centroId, ativo, notas, fotoUrl });
+    // Atualiza os campos do usuário
+    user.nome = nome;
+    user.email = email;
+    user.password = password;
+    user.centroId = centroId;
+    user.Ativo = Ativo; // Garanta que 'Ativo' está sendo corretamente atribuído
 
-    // Retorna os dados atualizados do usuário
-    const updatedUser = await User.findByPk(id);
+    // Outros campos
+    user.notas = notas;
+    user.fotoUrl = fotoUrl;
 
-    res.status(200).json(updatedUser);
+    await user.save();
+
+    // Retorna o usuário atualizado
+    res.status(200).json(user);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Erro ao atualizar utilizador' });
+    res.status(500).json({ message: 'Erro ao atualizar o usuário', error });
   }
 };
+
 
 
 // Listar todos os utilizadores
