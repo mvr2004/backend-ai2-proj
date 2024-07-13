@@ -1,25 +1,24 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
-const upload = require('../configs/multer'); // Importe o módulo multer configurado
+const upload = require('../configs/multer'); // Import multer configuration
 
-// Rota para adicionar um novo utilizador
+// Route to add a new user
 router.post('/add', upload.single('foto'), userController.addUser);
 
-// Rota para atualizar um utilizador
+// Route to update a user
 router.put('/update/:id', upload.single('foto'), userController.updateUser);
 
-// Rota para listar todos os utilizadores
+// Route to list all users
 router.get('/list', userController.listUsers);
 
-// Rota para listar utilizador por nome, ID ou email
+// Route to find a user by name, ID, or email
 router.get('/search', userController.findUser);
 
-// Rota para filtrar utilizadores por estado ativo ou inativo
+// Route to filter users by active or inactive status
 router.get('/filter', userController.filterUsers);
 
-
-// Rota para listar usuários por centroId
+// Route to list users by centroId
 router.get('/filterByCentro/:centroId', userController.filterUsersByCentro);
 
 module.exports = router;
