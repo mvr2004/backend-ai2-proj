@@ -91,7 +91,8 @@ userController.findUser = async (req, res) => {
       : { id: search };
 
     const users = await User.findAll({
-      where: whereCondition
+      where: whereCondition,
+      include: Centro // Inclua o modelo Centro para acessar os dados do centro
     });
 
     res.status(200).json(users);
@@ -106,7 +107,8 @@ userController.filterUsers = async (req, res) => {
     const { status } = req.query;
     const isActive = status === 'ativo';
     const users = await User.findAll({
-      where: { Ativo: isActive }
+      where: { Ativo: isActive },
+      include: Centro // Inclua o modelo Centro para acessar os dados do centro
     });
     res.status(200).json(users);
   } catch (error) {
@@ -120,7 +122,8 @@ userController.filterUsersByCentro = async (req, res) => {
 
   try {
     const users = await User.findAll({
-      where: { centroId }
+      where: { centroId },
+      include: Centro // Inclua o modelo Centro para acessar os dados do centro
     });
     res.status(200).json(users);
   } catch (error) {
