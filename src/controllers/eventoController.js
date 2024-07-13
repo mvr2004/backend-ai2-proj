@@ -33,6 +33,7 @@ exports.getAllEventos = async (req, res) => {
 };
 
 
+// Ver eventos por centro
 exports.getEventosByCentro = async (req, res) => {
     const { centroId } = req.params;
 
@@ -57,7 +58,6 @@ exports.getEventosByCentro = async (req, res) => {
         res.status(500).json({ error: 'Erro ao buscar eventos', details: error.message });
     }
 };
-
 
 // Inserir um novo evento
 exports.createEvento = async (req, res) => {
