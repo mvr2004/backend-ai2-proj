@@ -10,19 +10,7 @@ exports.getAllEventos = async (req, res) => {
 
     try {
         const eventos = await Evento.findAll({
-            attributes: {
-                include: [
-                    [Sequelize.fn('COUNT', Sequelize.col('ParticipacaoEventos.eventoId')), 'numeroDeParticipantes']
-                ]
-            },
-            include: [
-                {
-                    model: ParticipacaoEvento,
-                    attributes: []
-                }
-            ],
-            where: whereCondition,
-            group: ['Evento.id']
+            where: whereCondition
         });
         res.json(eventos);
     } catch (error) {
@@ -36,25 +24,14 @@ exports.getEventosByCentro = async (req, res) => {
 
     try {
         const eventos = await Evento.findAll({
-            where: { centroId },
-            attributes: {
-                include: [
-                    [Sequelize.fn('COUNT', Sequelize.col('ParticipacaoEventos.eventoId')), 'numeroDeParticipantes']
-                ]
-            },
-            include: [
-                {
-                    model: ParticipacaoEvento,
-                    attributes: []
-                }
-            ],
-            group: ['Evento.id']
+            where: { centroId }
         });
         res.json(eventos);
     } catch (error) {
         res.status(500).json({ error: 'Erro ao buscar eventos', details: error.message });
     }
 };
+
 
 
 // Inserir um novo evento
