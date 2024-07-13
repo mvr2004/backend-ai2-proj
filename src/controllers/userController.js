@@ -36,20 +36,29 @@ userController.updateUser = async (req, res) => {
       fotoUrl = 'https://backend-ai2-proj.onrender.com/uploads/' + req.file.filename;
     }
 
-    const user = await User.findByPk(id);
+    // Busca o usuário pelo ID incluindo os dados do centro associado
+    const user = await User.findByPk(id, {
+      include: Centro
+    });
 
     if (!user) {
       return res.status(404).json({ message: 'Utilizador não encontrado' });
     }
 
+    // Atualiza os dados do usuário
     await user.update({ nome, email, password, centroId, ativo, notas, fotoUrl });
-    res.status(200).json(user);
+
+    // Retorna os dados atualizados do usuário (incluindo o centro)
+    const updatedUser = await User.findByPk(id, {
+      include: Centro
+    });
+
+    res.status(200).json(updatedUser);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Erro ao atualizar utilizador' });
   }
 };
-
 
 // Listar todos os utilizadores
 userController.listUsers = async (req, res) => {
