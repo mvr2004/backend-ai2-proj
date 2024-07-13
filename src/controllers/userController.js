@@ -2,6 +2,42 @@ const { Op } = require('sequelize');
 const User = require('../models/User');
 const Centro = require('../models/Centro');
 const upload = require('../configs/multer');
+const bcrypt = require('bcrypt');
+
+userController.updateUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { nome, email, password, centroId, Ativo, notas, fotoUrl } = req.body;
+
+    // Verifica se o usuário existe
+    const user = await User.findByPk(id);
+    if (!user) {
+      return res.status(404).json({ message: 'Usuário não encontrado' });
+    }
+
+    // Atualiza os campos do usuário
+    user.nome = nome;
+    user.email = email;
+    if (password) {
+      user.password = await bcrypt.hash(password, 10);
+    }
+    user.centroId = centroId;
+    user.Ativo = Ativo;
+
+    // Outros campos
+    user.notas = notas;
+    user.fotoUrl = fotoUrl;
+
+    await user.save();
+
+    // Retorna o usuário atualizado
+    res.status(200).json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Erro ao atualizar o usuário', error });
+  }
+};
+
 
 const userController = {};
 
@@ -26,8 +62,11 @@ userController.addUser = async (req, res) => {
       return res.status(404).json({ message: 'Centro não encontrado' });
     }
 
+    // Criptografar a senha
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     // Crie o novo usuário
-    const user = await User.create({ nome, email, password, fotoUrl: foto, centroId });
+    const user = await User.create({ nome, email, password: hashedPassword, fotoUrl: foto, centroId });
     res.status(201).json(user);
   } catch (error) {
     res.status(400).json({ message: 'Erro ao tentar adicionar o utilizador', error });
@@ -42,7 +81,7 @@ userController.addUser = async (req, res) => {
 userController.updateUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const { nome, email, password, centroId, Ativo, notas, fotoUrl } = req.body; // Certifique-se de que 'Ativo' está sendo corretamente extraído
+    const { nome, email, password, centroId, Ativo, notas, fotoUrl } = req.body;
 
     // Verifica se o usuário existe
     const user = await User.findByPk(id);
@@ -53,9 +92,11 @@ userController.updateUser = async (req, res) => {
     // Atualiza os campos do usuário
     user.nome = nome;
     user.email = email;
-    user.password = password;
+    if (password) {
+      user.password = await bcrypt.hash(password, 10);
+    }
     user.centroId = centroId;
-    user.Ativo = Ativo; // Garanta que 'Ativo' está sendo corretamente atribuído
+    user.Ativo = Ativo;
 
     // Outros campos
     user.notas = notas;
@@ -158,16 +199,26 @@ userController.deleteUser = async (req, res) => {
   try {
     const user = await User.findByPk(id);
     if (!user) {
-      return res.status(404).json({ message: 'Utilizador não encontrado' });
+      return res.status(404).json({ message: 'Usuário não encontrado' });
     }
 
-    user.ativo = false; // Define o utilizador como inativo
+    // Tentar excluir o usuário
+    const deletedUser = await User.destroy({
+      where: { id }
+    });
 
-    await user.save();
-    res.status(200).json({ message: 'Utilizador inativado com sucesso' });
+    if (deletedUser === 0) {
+      // Se o usuário não foi excluído (deletedUser === 0), inative o usuário
+      user.ativo = false;
+      await user.save();
+      return res.status(200).json({ message: 'Usuário inativado com sucesso' });
+    }
+
+    res.status(200).json({ message: 'Usuário excluído com sucesso' });
   } catch (error) {
-    res.status(500).json({ message: 'Erro ao inativar o utilizador', error });
+    res.status(500).json({ message: 'Erro ao tentar excluir ou inativar o usuário', error });
   }
 };
+
 
 module.exports = userController;
