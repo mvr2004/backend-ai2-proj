@@ -3,6 +3,15 @@ const sequelize = require('../configs/database');
 const User = require('./User');
 const Evento = require('./Evento');
 
+// Ensure User and Evento are correctly defined and imported
+if (!User || !User.prototype instanceof sequelize.Model) {
+    throw new Error('User model is not defined correctly');
+}
+
+if (!Evento || !Evento.prototype instanceof sequelize.Model) {
+    throw new Error('Evento model is not defined correctly');
+}
+
 const ParticipacaoEvento = sequelize.define('ParticipacaoEvento', {
     utilizadorId: {
         type: DataTypes.INTEGER,
@@ -40,6 +49,7 @@ const ParticipacaoEvento = sequelize.define('ParticipacaoEvento', {
     }
 });
 
+// Define associations
 User.belongsToMany(Evento, { through: ParticipacaoEvento, foreignKey: 'utilizadorId' });
 Evento.belongsToMany(User, { through: ParticipacaoEvento, foreignKey: 'eventoId' });
 
