@@ -9,9 +9,6 @@ router.put('/update/:id', eventoController.updateEvento);
 router.delete('/del/:id', eventoController.deleteEvento);
 router.get('/listByCentro/:centroId', eventoController.getEventosByCentro);
 
-
-
-
 router.post('/addpart', participacaoEventoController.addParticipacao);
 router.delete('/removepart', participacaoEventoController.removeParticipacao);
 

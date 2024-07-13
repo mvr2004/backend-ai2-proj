@@ -1,14 +1,12 @@
-// controllers/eventoController.js
-
 const Evento = require('../models/Evento');
 const ParticipacaoEvento = require('../models/UserEventos');
 const { Sequelize } = require('sequelize');
 
 // Ver todos os eventos com a contagem de participantes
 exports.getAllEventos = async (req, res) => {
-    const { centro } = req.query; // Get the centro from query parameters
+    const { centro } = req.query;
 
-    const whereCondition = centro ? { centroId: centro } : {}; // Add centro condition if provided
+    const whereCondition = centro ? { centroId: centro } : {};
 
     try {
         const eventos = await Evento.findAll({
@@ -23,7 +21,7 @@ exports.getAllEventos = async (req, res) => {
                     attributes: []
                 }
             ],
-            where: whereCondition, // Use the condition in the query
+            where: whereCondition,
             group: ['Evento.id']
         });
         res.json(eventos);
@@ -31,7 +29,6 @@ exports.getAllEventos = async (req, res) => {
         res.status(500).json({ error: 'Erro ao buscar eventos', details: error.message });
     }
 };
-
 
 // Ver eventos por centro
 exports.getEventosByCentro = async (req, res) => {
