@@ -44,8 +44,6 @@ userController.updateUser = async (req, res) => {
 };
 
 
-const userController = {};
-
 // Adicionar um novo utilizador
 userController.addUser = async (req, res) => {
   try {
