@@ -3,7 +3,7 @@ const sequelize = require('../configs/database');
 const Subarea = require('./Subarea');
 const Utilizador = require('./User');
 const Centro = require('./Centro');
-const ParticipacaoEvento = require('./UserEventos');
+
 
 const Evento = sequelize.define('Evento', {
     id: {
@@ -106,6 +106,7 @@ const Evento = sequelize.define('Evento', {
     }
 });
 
+
 Subarea.hasMany(Evento, { foreignKey: 'subareaId' });
 Evento.belongsTo(Subarea, { foreignKey: 'subareaId' });
 
@@ -117,3 +118,4 @@ Evento.belongsTo(Centro, { foreignKey: 'centroId' });
 
 
 module.exports = Evento;
+

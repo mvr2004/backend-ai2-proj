@@ -210,7 +210,6 @@ const User = sequelize.define('User', {
               Ativo: true,
               centroId: 2, // ID do centro ao qual Joana Sousa está associada
             }
-            // Adicione mais registros conforme necessário
           ]);
         }
       } catch (error) {
