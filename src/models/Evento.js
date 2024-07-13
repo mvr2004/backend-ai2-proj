@@ -4,6 +4,7 @@ const Subarea = require('./Subarea');
 const Utilizador = require('./User');
 const Centro = require('./Centro');
 const ParticipacaoEvento = require('./UserEventos');
+
 const Evento = sequelize.define('Evento', {
     id: {
         type: DataTypes.INTEGER,
@@ -114,7 +115,7 @@ Evento.belongsTo(Utilizador, { foreignKey: 'utilizadorId' });
 Centro.hasMany(Evento, { foreignKey: 'centroId' });
 Evento.belongsTo(Centro, { foreignKey: 'centroId' });
 
-Evento.belongsToMany(Utilizador, { through: ParticipacaoEvento, foreignKey: 'eventoId' });
-Utilizador.belongsToMany(Evento, { through: ParticipacaoEvento, foreignKey: 'utilizadorId' });
+Evento.belongsToMany(User, { through: ParticipacaoEvento, foreignKey: 'eventoId' });
+User.belongsToMany(Evento, { through: ParticipacaoEvento, foreignKey: 'utilizadorId' });
 
 module.exports = Evento;
