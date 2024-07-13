@@ -30,7 +30,7 @@ userController.updateUser = async (req, res) => {
   try {
     const { id } = req.params;
     const { nome, email, password, centroId, ativo, notas } = req.body;
-    let fotoUrl = req.body.fotoUrl;
+    let fotoUrl = req.body.fotoUrl || 'https://backend-ai2-proj.onrender.com/uploads/profile.jpg'; // Default profile picture URL
 
     if (req.file) {
       fotoUrl = 'https://backend-ai2-proj.onrender.com/uploads/' + req.file.filename;
@@ -49,6 +49,7 @@ userController.updateUser = async (req, res) => {
     res.status(500).json({ message: 'Erro ao atualizar utilizador' });
   }
 };
+
 
 // Listar todos os utilizadores
 userController.listUsers = async (req, res) => {
