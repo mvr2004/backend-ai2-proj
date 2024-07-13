@@ -78,17 +78,24 @@ userController.listUsers = async (req, res) => {
 userController.findUser = async (req, res) => {
   try {
     const { search } = req.query;
+
+    // Verifica se o search é um número para buscar por ID
+    const whereCondition = isNaN(search) 
+      ? {
+          [Op.or]: [
+            { nome: { [Op.like]: `%${search}%` } },
+            { email: { [Op.like]: `%${search}%` } }
+          ]
+        }
+      : { id: search };
+
     const utilizadores = await User.findAll({
-      where: {
-        [Op.or]: [
-          { nome: { [Op.like]: `%${search}%` } },
-          { email: { [Op.like]: `%${search}%` } },
-          { id: search }
-        ]
-      }
+      where: whereCondition
     });
+
     res.status(200).json(utilizadores);
   } catch (error) {
+    console.error('Erro ao buscar utilizador:', error);
     res.status(500).json({ message: 'Erro ao tentar encontrar o utilizador', error });
   }
 };
